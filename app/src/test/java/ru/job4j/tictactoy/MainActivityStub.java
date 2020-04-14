@@ -2,7 +2,7 @@ package ru.job4j.tictactoy;
 
 import android.view.View;
 
-public class MainActivityStub extends MainActivity implements TicTakActions {
+public class MainActivityStub extends MainActivity {
 
     @Override
     public void answer(View view) {
@@ -25,7 +25,7 @@ public class MainActivityStub extends MainActivity implements TicTakActions {
     }
 
     @Override
-    public void setButtonText(int row, int column, String text) {
+    public void setButtonText(int viewId, String text) {
 
     }
 }

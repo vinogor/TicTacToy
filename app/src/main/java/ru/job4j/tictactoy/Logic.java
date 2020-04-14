@@ -1,52 +1,102 @@
 package ru.job4j.tictactoy;
 
+import android.os.Bundle;
+import android.view.View;
+
 // только логика
 public class Logic {
+
+    private MainActivity activity;
 
     public static final String X = "X";  // 1-й игрок, первый раз ходит первым
     public static final String O = "O";  // 2-й игрок, human or AI
     public static final String S = " ";  // Space
 
-    private MainActivity activity;
+    private static final String ROW = "row";
+    private static final String ENEMY_IS_HUMAN = "enemyIsHuman";
+    private static final String COUNTER = "counter";
+    private static final String SIGN = "sign";
+
     private String currentSign;
     private int counter;
     private int size;
     private String[][] field;
+    private int[][] buttonsIds;
 
     private boolean enemyIsHuman;
 
-    public Logic(MainActivity activity) {
-        this.activity = activity;
+    public Logic() {
         this.currentSign = X;
         this.size = 3;
         this.field = new String[size][size];
         this.enemyIsHuman = true;
+        this.buttonsIds = new int[][]{
+                {R.id.button00, R.id.button01, R.id.button02},
+                {R.id.button10, R.id.button11, R.id.button12},
+                {R.id.button20, R.id.button21, R.id.button22}
+        };
     }
 
-    public void start() {
+    public void attachView(MainActivity activity) {
+        this.activity = activity;
+    }
+
+    public void detachView() {
+        this.activity = null; // чтобы не было утечек памяти
+    }
+
+    public void start(Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            firstStart();
+        } else {
+            startAfterRestart(savedInstanceState);
+        }
+    }
+
+    public void firstStart() {
         clean();
         activity.setTextWhoseMoveNow(currentSign);
     }
 
-    public void startAfterRestart(String[][] field, boolean enemyIsHuman, int counter, String sign) {
+    private void startAfterRestart(Bundle savedInstanceState) {
+        String[][] field = new String[size][size];
+        for (int i = 0; i < size; i++) {
+            field[i] = savedInstanceState.getStringArray(ROW + i);
+        }
+
         this.field = field;
-        this.enemyIsHuman = enemyIsHuman;
-        this.counter = counter;
-        this.currentSign = sign;
-        activity.setTextWhoseMoveNow(currentSign);
+        this.enemyIsHuman = savedInstanceState.getBoolean(ENEMY_IS_HUMAN);
+        this.counter = savedInstanceState.getInt(COUNTER);
+        this.currentSign = savedInstanceState.getString(SIGN);
+
         reDrawButtons(field);
+        activity.setTextWhoseMoveNow(currentSign);
+    }
+
+    public void saveInstance(Bundle outState) {
+        for (int i = 0; i < size; i++) {
+            outState.putStringArray(ROW + i, field[i]);
+        }
+        outState.putBoolean(ENEMY_IS_HUMAN, enemyIsHuman);
+        outState.putInt(COUNTER, counter);
+        outState.putString(SIGN, currentSign);
     }
 
     private void reDrawButtons(String[][] field) {
         for (int row = 0; row < size; row++) {
             for (int column = 0; column < size; column++) {
-                activity.setButtonText(row, column, field[row][column]);
+                int viewId = buttonsIds[row][column];
+                activity.setButtonText(viewId, field[row][column]);
             }
         }
     }
 
-    public void handleAnswer(int row, int column) {
+    public void handleAnswerByView(View viewButton) {
+        int[] coordinates = getCoordinates(viewButton);
+        handleAnswerByCoordinates(coordinates[0], coordinates[1]);
+    }
 
+    public void handleAnswerByCoordinates(int row, int column) {
         if (field[row][column].equals(S)) {
             makeMove(row, column);
 
@@ -56,6 +106,14 @@ public class Logic {
                 makeMove(coordinates[0], coordinates[1]);
             }
         }
+    }
+
+    public int[] getCoordinates(View viewButton) {
+        String btnName = viewButton.getResources().getResourceEntryName(viewButton.getId());
+        int length = btnName.length();
+        int row = Character.getNumericValue(btnName.charAt(length - 2));
+        int column = Character.getNumericValue(btnName.charAt(length - 1));
+        return new int[]{row, column};
     }
 
     private void makeMove(int row, int column) {
@@ -79,13 +137,13 @@ public class Logic {
         if (checkWinner()) {
             activity.makeToast("winner is " + currentSign);
             changeSign();
-            start();
+            firstStart();
             return true;
         }
 
         if (counter == 9) {
             activity.makeToast("standoff");
-            start();
+            firstStart();
             return true;
         }
         return false;
@@ -97,7 +155,8 @@ public class Logic {
     }
 
     private void setSignOnField(int row, int column) {
-        activity.setButtonText(row, column, currentSign);
+        int viewId = buttonsIds[row][column];
+        activity.setButtonText(viewId, currentSign);
         field[row][column] = currentSign;
         counter++;
     }
@@ -108,6 +167,7 @@ public class Logic {
                 if (field[i][j].equals(S)) {
                     return new int[]{i, j};
                 }
+
             }
         }
         return null;
@@ -120,7 +180,8 @@ public class Logic {
                 // очистка внутреннего массива
                 field[i][j] = S;
                 // очистка текста всех кнопок
-                activity.setButtonText(i, j, S);
+                int viewId = buttonsIds[i][j];
+                activity.setButtonText(viewId, S);
             }
         }
     }

@@ -16,7 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private PresenterImpl presenter;
+    private Presenter.ActivityActions presenter;
     private TextView whoseMove;
 
     @Override

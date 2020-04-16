@@ -11,7 +11,7 @@ public class Logic {
     public static final String O = "O";  // 2-й игрок, human or AI
     public static final String S = " ";  // Space
 
-    private Presenter presenter;
+    private Presenter.LogicActions presenter;
 
     private String currentSign;
     private int counter;
@@ -20,7 +20,7 @@ public class Logic {
 
     private boolean enemyIsHuman;
 
-    public Logic(Presenter presenter) {
+    public Logic(Presenter.LogicActions presenter) {
         this.currentSign = X;
         this.size = 3;
         this.field = new String[size][size];

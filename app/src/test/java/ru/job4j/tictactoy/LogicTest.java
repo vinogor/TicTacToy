@@ -15,7 +15,7 @@ public class LogicTest {
 
     @Before
     public void setUp() {
-        Presenter presenter = new PresenterStub();
+        Presenter.LogicActions presenter = new PresenterStub();
         logic = new Logic(presenter);
     }
 

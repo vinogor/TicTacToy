@@ -10,7 +10,7 @@ import static ru.job4j.tictactoy.Logic.S;
 // создаёт Logic
 // знает и общается с Logic и View
 
-public class PresenterImpl implements Presenter {
+public class PresenterImpl implements Presenter.ActivityActions, Presenter.LogicActions {
 
     private static final String ROW = "row";
     private static final String ENEMY_IS_HUMAN = "enemyIsHuman";
@@ -32,6 +32,7 @@ public class PresenterImpl implements Presenter {
         size = logic.getSize();
     }
 
+    @Override
     public void start(Bundle bundle) {
         if (bundle == null) {
             startRound();
@@ -45,6 +46,53 @@ public class PresenterImpl implements Presenter {
         logic.cleanField();
         cleanTextOfButtons();
         activity.setTextCurrentPlayer(logic.getCurrentSign());
+    }
+
+    @Override
+    public void handleAnswerByView(Button button) {
+        int[] coordinates = getCoordinates(button);
+        logic.handleAnswerByCoordinates(coordinates[0], coordinates[1]);
+    }
+
+    @Override
+    public void change2player() {
+        logic.change2player();
+    }
+
+    @Override
+    public void saveInstance(Bundle bundle) {
+        for (int i = 0; i < size; i++) {
+            bundle.putStringArray(ROW + i, logic.getRaw(i));
+        }
+        bundle.putBoolean(ENEMY_IS_HUMAN, logic.isEnemyIsHuman());
+        bundle.putInt(COUNTER, logic.getCounter());
+        bundle.putString(SIGN, logic.getCurrentSign());
+    }
+
+    @Override
+    public void attachView(MainActivity activity) {
+        this.activity = activity;
+    }
+
+    @Override
+    public void detachView() {
+        this.activity = null;
+    }
+
+    @Override
+    public void makeToast(String msg) {
+        activity.makeToast(msg);
+    }
+
+    @Override
+    public void setTextCurrentPlayer(String currentSign) {
+        activity.setTextCurrentPlayer(currentSign);
+    }
+
+    @Override
+    public void setTextButton(int row, int column, String currentSign) {
+        int viewId = buttonsIds[row][column];
+        activity.setButtonText(viewId, currentSign);
     }
 
     private void startAfterRestart(Bundle bundle) {
@@ -83,53 +131,11 @@ public class PresenterImpl implements Presenter {
         }
     }
 
-    public void handleAnswerByView(Button button) {
-        int[] coordinates = getCoordinates(button);
-        logic.handleAnswerByCoordinates(coordinates[0], coordinates[1]);
-    }
-
-    public int[] getCoordinates(Button button) {
+    private int[] getCoordinates(Button button) {
         String btnName = button.getResources().getResourceEntryName(button.getId());
         int length = btnName.length();
         int row = Character.getNumericValue(btnName.charAt(length - 2));
         int column = Character.getNumericValue(btnName.charAt(length - 1));
         return new int[]{row, column};
-    }
-
-    public void change2player() {
-        logic.change2player();
-    }
-
-    public void saveInstance(Bundle bundle) {
-        for (int i = 0; i < size; i++) {
-            bundle.putStringArray(ROW + i, logic.getRaw(i));
-        }
-        bundle.putBoolean(ENEMY_IS_HUMAN, logic.isEnemyIsHuman());
-        bundle.putInt(COUNTER, logic.getCounter());
-        bundle.putString(SIGN, logic.getCurrentSign());
-    }
-
-    public void attachView(MainActivity activity) {
-        this.activity = activity;
-    }
-
-    public void detachView() {
-        this.activity = null;
-    }
-
-    @Override
-    public void makeToast(String msg) {
-        activity.makeToast(msg);
-    }
-
-    @Override
-    public void setTextCurrentPlayer(String currentSign) {
-        activity.setTextCurrentPlayer(currentSign);
-    }
-
-    @Override
-    public void setTextButton(int row, int column, String currentSign) {
-        int viewId = buttonsIds[row][column];
-        activity.setButtonText(viewId, currentSign);
     }
 }

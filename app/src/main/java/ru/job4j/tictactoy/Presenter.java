@@ -1,12 +1,35 @@
 package ru.job4j.tictactoy;
 
+import android.os.Bundle;
+import android.widget.Button;
+
+
 public interface Presenter {
 
-    void makeToast(String msg);
+    interface LogicActions {
 
-    void  startRound();
+        void makeToast(String msg);
 
-    void setTextCurrentPlayer(String sign);
+        void startRound();
 
-    void setTextButton(int row, int column, String currentSign);
+        void setTextCurrentPlayer(String sign);
+
+        void setTextButton(int row, int column, String currentSign);
+
+    }
+
+    interface ActivityActions {
+
+        void start(Bundle bundle);
+
+        void attachView(MainActivity activity);
+
+        void handleAnswerByView(Button button);
+
+        void change2player();
+
+        void saveInstance(Bundle bundle);
+
+        void detachView();
+    }
 }

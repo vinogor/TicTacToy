@@ -9,43 +9,43 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-// только визуальная часть
+// === в M-V-P это VIEW ===
+
+// управдение только визуальной частью
+// создаёт Presenter и знает только о нём
+
 public class MainActivity extends AppCompatActivity {
 
-    private Logic logic;
+    private PresenterImpl presenter;
     private TextView whoseMove;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         init();
-
-        logic.start(savedInstanceState);
+        presenter.start(savedInstanceState);
     }
 
     private void init() {
-
-        logic = new Logic();
-        logic.attachView(this);
-
+        presenter = new PresenterImpl();
+        presenter.attachView(this);
         whoseMove = findViewById(R.id.currentPlayer);
     }
 
     public void answer(View view) {
-        logic.handleAnswerByView(view);
+        presenter.handleAnswerByView((Button) view);
     }
 
     public void pcOrHuman(View view) {
-        logic.change2player();
+        presenter.change2player();
     }
 
     public void makeToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    public void setTextWhoseMoveNow(String currentSign) {
+    public void setTextCurrentPlayer(String currentSign) {
         whoseMove.setText(String.format("waiting for %s player's move", currentSign));
     }
 
@@ -56,12 +56,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        logic.saveInstance(outState);
+        presenter.saveInstance(outState);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        logic.detachView();
+        presenter.detachView();
     }
 }

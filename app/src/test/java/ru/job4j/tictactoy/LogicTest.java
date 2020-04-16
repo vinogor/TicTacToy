@@ -1,11 +1,7 @@
 package ru.job4j.tictactoy;
 
-import android.app.Activity;
-
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.Mock;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -19,16 +15,13 @@ public class LogicTest {
 
     @Before
     public void setUp() {
-
-
-        MainActivity activity = new MainActivityStub();
-        logic = new Logic();
-        logic.attachView(activity);
+        Presenter presenter = new PresenterStub();
+        logic = new Logic(presenter);
     }
 
     @Test
     public void handleAnswerTest_00() {
-        logic.firstStart();
+        logic.cleanField();
         String[][] res = logic.getField();
         assertThat(res, is(new String[][]{
                 {S, S, S},
@@ -39,7 +32,7 @@ public class LogicTest {
 
     @Test
     public void handleAnswerTest_01() {
-        logic.firstStart();
+        logic.cleanField();
         logic.handleAnswerByCoordinates(0, 0);
         String[][] res = logic.getField();
         assertThat(res, is(new String[][]{
@@ -51,7 +44,7 @@ public class LogicTest {
 
     @Test
     public void handleAnswerTest_02() {
-        logic.firstStart();
+        logic.cleanField();
         logic.handleAnswerByCoordinates(0, 0);
         logic.handleAnswerByCoordinates(1, 1);
         String[][] res = logic.getField();
@@ -64,7 +57,7 @@ public class LogicTest {
 
     @Test
     public void handleAnswerTest_03() {
-        logic.firstStart();
+        logic.cleanField();
         logic.handleAnswerByCoordinates(0, 0);
         logic.handleAnswerByCoordinates(0, 0);
         logic.handleAnswerByCoordinates(1, 1);
@@ -78,7 +71,7 @@ public class LogicTest {
 
     @Test
     public void checkWinnerTest_01() {
-        logic.firstStart();
+        logic.cleanField();
 
         logic.setField(new String[][]{
                 {X, S, S},
@@ -90,7 +83,7 @@ public class LogicTest {
 
     @Test
     public void checkWinnerTest_02() {
-        logic.firstStart();
+        logic.cleanField();
 
         logic.setField(new String[][]{
                 {S, S, X},
@@ -102,7 +95,7 @@ public class LogicTest {
 
     @Test
     public void checkWinnerTest_03() {
-        logic.firstStart();
+        logic.cleanField();
 
         logic.setField(new String[][]{
                 {X, X, X},
@@ -114,7 +107,7 @@ public class LogicTest {
 
     @Test
     public void checkWinnerTest_04() {
-        logic.firstStart();
+        logic.cleanField();
 
         logic.setField(new String[][]{
                 {S, S, S},
@@ -126,7 +119,7 @@ public class LogicTest {
 
     @Test
     public void checkWinnerTest_05() {
-        logic.firstStart();
+        logic.cleanField();
 
         logic.setField(new String[][]{
                 {S, S, S},
@@ -138,7 +131,7 @@ public class LogicTest {
 
     @Test
     public void checkWinnerTest_06() {
-        logic.firstStart();
+        logic.cleanField();
 
         logic.setField(new String[][]{
                 {X, S, S},
@@ -150,7 +143,7 @@ public class LogicTest {
 
     @Test
     public void checkWinnerTest_07() {
-        logic.firstStart();
+        logic.cleanField();
 
         logic.setField(new String[][]{
                 {S, X, S},
@@ -162,7 +155,7 @@ public class LogicTest {
 
     @Test
     public void checkWinnerTest_08() {
-        logic.firstStart();
+        logic.cleanField();
 
         logic.setField(new String[][]{
                 {S, S, X},
@@ -174,7 +167,7 @@ public class LogicTest {
 
     @Test
     public void checkWinnerTest_09() {
-        logic.firstStart();
+        logic.cleanField();
 
         logic.setField(new String[][]{
                 {S, S, X},
@@ -186,7 +179,7 @@ public class LogicTest {
 
     @Test
     public void checkWinnerTest_10() {
-        logic.firstStart();
+        logic.cleanField();
 
         logic.setField(new String[][]{
                 {X, S, X},
@@ -198,14 +191,14 @@ public class LogicTest {
 
     @Test
     public void checkEndOfGameTest_01() {
-        logic.firstStart();
+        logic.cleanField();
         logic.setCounter(9);
         assertThat(logic.checkEndOfGame(), is(true));
     }
 
     @Test
     public void checkEndOfGameTest_02() {
-        logic.firstStart();
+        logic.cleanField();
         logic.setCounter(8);
         assertThat(logic.checkEndOfGame(), is(false));
     }

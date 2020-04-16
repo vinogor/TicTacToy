@@ -1,99 +1,31 @@
 package ru.job4j.tictactoy;
 
-import android.os.Bundle;
-import android.view.View;
+// === в M-V-P это MODEL ===
 
-// только логика
+// только логика игры
+// знает только о Presenter
+
 public class Logic {
-
-    private MainActivity activity;
 
     public static final String X = "X";  // 1-й игрок, первый раз ходит первым
     public static final String O = "O";  // 2-й игрок, human or AI
     public static final String S = " ";  // Space
 
-    private static final String ROW = "row";
-    private static final String ENEMY_IS_HUMAN = "enemyIsHuman";
-    private static final String COUNTER = "counter";
-    private static final String SIGN = "sign";
+    private Presenter presenter;
 
     private String currentSign;
     private int counter;
     private int size;
     private String[][] field;
-    private int[][] buttonsIds;
 
     private boolean enemyIsHuman;
 
-    public Logic() {
+    public Logic(Presenter presenter) {
         this.currentSign = X;
         this.size = 3;
         this.field = new String[size][size];
         this.enemyIsHuman = true;
-        this.buttonsIds = new int[][]{
-                {R.id.button00, R.id.button01, R.id.button02},
-                {R.id.button10, R.id.button11, R.id.button12},
-                {R.id.button20, R.id.button21, R.id.button22}
-        };
-    }
-
-    public void attachView(MainActivity activity) {
-        this.activity = activity;
-    }
-
-    public void detachView() {
-        this.activity = null; // чтобы не было утечек памяти
-    }
-
-    public void start(Bundle savedInstanceState) {
-        if (savedInstanceState == null) {
-            firstStart();
-        } else {
-            startAfterRestart(savedInstanceState);
-        }
-    }
-
-    public void firstStart() {
-        clean();
-        activity.setTextWhoseMoveNow(currentSign);
-    }
-
-    private void startAfterRestart(Bundle savedInstanceState) {
-        String[][] field = new String[size][size];
-        for (int i = 0; i < size; i++) {
-            field[i] = savedInstanceState.getStringArray(ROW + i);
-        }
-
-        this.field = field;
-        this.enemyIsHuman = savedInstanceState.getBoolean(ENEMY_IS_HUMAN);
-        this.counter = savedInstanceState.getInt(COUNTER);
-        this.currentSign = savedInstanceState.getString(SIGN);
-
-        reDrawButtons(field);
-        activity.setTextWhoseMoveNow(currentSign);
-    }
-
-    public void saveInstance(Bundle outState) {
-        for (int i = 0; i < size; i++) {
-            outState.putStringArray(ROW + i, field[i]);
-        }
-        outState.putBoolean(ENEMY_IS_HUMAN, enemyIsHuman);
-        outState.putInt(COUNTER, counter);
-        outState.putString(SIGN, currentSign);
-    }
-
-    private void reDrawButtons(String[][] field) {
-        for (int row = 0; row < size; row++) {
-            for (int column = 0; column < size; column++) {
-                int viewId = buttonsIds[row][column];
-                activity.setButtonText(viewId, field[row][column]);
-            }
-        }
-    }
-
-    public void handleAnswerByView(View viewButton) {
-        int[] coordinates = getCoordinates(viewButton);
-        handleAnswerByCoordinates(coordinates[0], coordinates[1]);
+        this.presenter = presenter;
     }
 
     public void handleAnswerByCoordinates(int row, int column) {
@@ -106,14 +38,6 @@ public class Logic {
                 makeMove(coordinates[0], coordinates[1]);
             }
         }
-    }
-
-    public int[] getCoordinates(View viewButton) {
-        String btnName = viewButton.getResources().getResourceEntryName(viewButton.getId());
-        int length = btnName.length();
-        int row = Character.getNumericValue(btnName.charAt(length - 2));
-        int column = Character.getNumericValue(btnName.charAt(length - 1));
-        return new int[]{row, column};
     }
 
     private void makeMove(int row, int column) {
@@ -135,28 +59,27 @@ public class Logic {
 
     boolean checkEndOfGame() {
         if (checkWinner()) {
-            activity.makeToast("winner is " + currentSign);
+            presenter.makeToast("winner is " + currentSign);
             changeSign();
-            firstStart();
+            presenter.startRound();
             return true;
         }
 
         if (counter == 9) {
-            activity.makeToast("standoff");
-            firstStart();
+            presenter.makeToast("standoff");
+            presenter.startRound();
             return true;
         }
         return false;
     }
 
-    private void changeSign() {
+    public void changeSign() {
         currentSign = currentSign.equals(X) ? O : X;
-        activity.setTextWhoseMoveNow(currentSign);
+        presenter.setTextCurrentPlayer(currentSign);
     }
 
     private void setSignOnField(int row, int column) {
-        int viewId = buttonsIds[row][column];
-        activity.setButtonText(viewId, currentSign);
+        presenter.setTextButton(row, column, currentSign);
         field[row][column] = currentSign;
         counter++;
     }
@@ -167,21 +90,17 @@ public class Logic {
                 if (field[i][j].equals(S)) {
                     return new int[]{i, j};
                 }
-
             }
         }
         return null;
     }
 
-    private void clean() {
+    public void cleanField() {
         counter = 0;
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 // очистка внутреннего массива
                 field[i][j] = S;
-                // очистка текста всех кнопок
-                int viewId = buttonsIds[i][j];
-                activity.setButtonText(viewId, S);
             }
         }
     }
@@ -225,6 +144,10 @@ public class Logic {
         return false;
     }
 
+    public String[] getRaw(int i) {
+        return field[i];
+    }
+
     public String[][] getField() {
         return field;
     }
@@ -251,5 +174,13 @@ public class Logic {
 
     public void setField(String[][] field) {
         this.field = field;
+    }
+
+    public void setCurrentSign(String currentSign) {
+        this.currentSign = currentSign;
+    }
+
+    public void setEnemyIsHuman(boolean enemyIsHuman) {
+        this.enemyIsHuman = enemyIsHuman;
     }
 }

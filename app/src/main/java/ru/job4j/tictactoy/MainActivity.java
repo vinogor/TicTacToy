@@ -1,10 +1,10 @@
 package ru.job4j.tictactoy;
 
+import android.app.DialogFragment;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,11 +18,13 @@ public class MainActivity extends AppCompatActivity {
 
     private Presenter.ActivityActions presenter;
     private TextView whoseMove;
+    private DialogFragment dlg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        dlg = new Dialog1();
         init();
         presenter.start(savedInstanceState);
     }
@@ -42,7 +44,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void makeToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        Bundle bundle = new Bundle();
+        bundle.putString("message", message);
+        dlg.setArguments(bundle);
+        dlg.show(getFragmentManager(), "dlg");
     }
 
     public void setTextCurrentPlayer(String currentSign) {

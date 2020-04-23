@@ -5,9 +5,9 @@ import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static ru.job4j.tictactoy.Logic.O;
-import static ru.job4j.tictactoy.Logic.S;
-import static ru.job4j.tictactoy.Logic.X;
+import static ru.job4j.tictactoy.LogicImpl.O;
+import static ru.job4j.tictactoy.LogicImpl.S;
+import static ru.job4j.tictactoy.LogicImpl.X;
 
 public class LogicTest {
 
@@ -15,8 +15,8 @@ public class LogicTest {
 
     @Before
     public void setUp() {
-        Presenter.LogicActions presenter = new PresenterStub();
-        logic = new Logic(presenter);
+        Presenter.ActionsWithLogic presenter = new PresenterStub();
+        logic = new LogicImpl(presenter);
     }
 
     @Test

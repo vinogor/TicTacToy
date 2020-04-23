@@ -14,9 +14,9 @@ import androidx.appcompat.app.AppCompatActivity;
 // управдение только визуальной частью
 // создаёт Presenter и знает только о нём
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainActivityActions {
 
-    private Presenter.ActivityActions presenter;
+    private Presenter.ActionsWithActivity presenter;
     private TextView whoseMove;
     private DialogFragment dlg;
 
@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         presenter.change2player();
     }
 
+    @Override
     public void makeToast(String message) {
         Bundle bundle = new Bundle();
         bundle.putString("message", message);
@@ -50,10 +51,12 @@ public class MainActivity extends AppCompatActivity {
         dlg.show(getFragmentManager(), "dlg");
     }
 
+    @Override
     public void setTextCurrentPlayer(String currentSign) {
         whoseMove.setText(String.format("waiting for %s player's move", currentSign));
     }
 
+    @Override
     public void setButtonText(int viewId, String text) {
         ((Button) findViewById(viewId)).setText(text);
     }

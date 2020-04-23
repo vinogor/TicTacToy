@@ -3,27 +3,27 @@ package ru.job4j.tictactoy;
 import android.os.Bundle;
 import android.widget.Button;
 
-import static ru.job4j.tictactoy.Logic.S;
+import static ru.job4j.tictactoy.LogicImpl.S;
 
 // === в M-V-P это PRESENTER ===
 
 // создаёт Logic
 // знает и общается с Logic и View
 
-public class PresenterImpl implements Presenter.ActivityActions, Presenter.LogicActions {
+public class PresenterImpl implements Presenter.ActionsWithActivity, Presenter.ActionsWithLogic {
 
     private static final String ROW = "row";
     private static final String ENEMY_IS_HUMAN = "enemyIsHuman";
     private static final String COUNTER = "counter";
     private static final String SIGN = "sign";
 
-    private MainActivity activity;
+    private MainActivityActions activity;
     private Logic logic;
     private int[][] buttonsIds;
     private int size;
 
     public PresenterImpl() {
-        logic = new Logic(this);
+        logic = new LogicImpl(this);
         buttonsIds = new int[][]{
                 {R.id.button00, R.id.button01, R.id.button02},
                 {R.id.button10, R.id.button11, R.id.button12},
@@ -70,7 +70,7 @@ public class PresenterImpl implements Presenter.ActivityActions, Presenter.Logic
     }
 
     @Override
-    public void attachView(MainActivity activity) {
+    public void attachView(MainActivityActions activity) {
         this.activity = activity;
     }
 

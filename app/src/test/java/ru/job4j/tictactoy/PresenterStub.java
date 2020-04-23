@@ -1,6 +1,6 @@
 package ru.job4j.tictactoy;
 
-public class PresenterStub implements Presenter.LogicActions {
+public class PresenterStub implements Presenter.ActionsWithLogic {
 
     @Override
     public void makeToast(String msg) {

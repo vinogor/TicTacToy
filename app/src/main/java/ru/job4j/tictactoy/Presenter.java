@@ -6,7 +6,7 @@ import android.widget.Button;
 
 public interface Presenter {
 
-    interface LogicActions {
+    interface ActionsWithLogic {
 
         void makeToast(String msg);
 
@@ -18,11 +18,11 @@ public interface Presenter {
 
     }
 
-    interface ActivityActions {
+    interface ActionsWithActivity {
 
         void start(Bundle bundle);
 
-        void attachView(MainActivity activity);
+        void attachView(MainActivityActions activity);
 
         void handleAnswerByView(Button button);
 

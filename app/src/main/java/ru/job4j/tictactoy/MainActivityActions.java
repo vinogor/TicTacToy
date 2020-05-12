@@ -2,7 +2,7 @@ package ru.job4j.tictactoy;
 
 interface MainActivityActions {
 
-    void makeToast(String message);
+    void makeDialog(String message);
 
     void setTextCurrentPlayer(String currentSign);
 

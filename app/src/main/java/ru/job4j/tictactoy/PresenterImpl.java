@@ -80,8 +80,8 @@ public class PresenterImpl implements Presenter.ActionsWithActivity, Presenter.A
     }
 
     @Override
-    public void makeToast(String msg) {
-        activity.makeToast(msg);
+    public void makeDialog(String msg) {
+        activity.makeDialog(msg);
     }
 
     @Override

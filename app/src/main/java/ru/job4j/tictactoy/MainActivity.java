@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityActio
     }
 
     @Override
-    public void makeToast(String message) {
+    public void makeDialog(String message) {
         Bundle bundle = new Bundle();
         bundle.putString("message", message);
         dlg.setArguments(bundle);

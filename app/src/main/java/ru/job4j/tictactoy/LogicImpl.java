@@ -65,14 +65,14 @@ public class LogicImpl implements Logic {
     @Override
     public boolean checkEndOfGame() {
         if (checkWinner()) {
-            presenter.makeToast("winner is " + currentSign);
+            presenter.makeDialog("winner is " + currentSign);
             changeSign();
             presenter.startRound();
             return true;
         }
 
         if (counter == 9) {
-            presenter.makeToast("standoff");
+            presenter.makeDialog("standoff");
             presenter.startRound();
             return true;
         }

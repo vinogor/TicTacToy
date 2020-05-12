@@ -3,7 +3,7 @@ package ru.job4j.tictactoy;
 public class PresenterStub implements Presenter.ActionsWithLogic {
 
     @Override
-    public void makeToast(String msg) {
+    public void makeDialog(String msg) {
 
     }
 

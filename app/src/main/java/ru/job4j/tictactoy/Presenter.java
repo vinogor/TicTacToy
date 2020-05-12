@@ -8,7 +8,7 @@ public interface Presenter {
 
     interface ActionsWithLogic {
 
-        void makeToast(String msg);
+        void makeDialog(String msg);
 
         void startRound();
 
